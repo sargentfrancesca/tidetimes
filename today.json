@@ -1,4 +1,1 @@
-[{"low_2": "12:55", "low_1": "00:40", "high_2": "18:23", "high_1": "06:08"}]
-
-
-// 1    0    *    *    *  rm today.json && scrapy crawl tidespider -o today.json
+[{"low_2": "12:55", "timecollected": "2015-09-13 22:14:26", "low_1": "00:40", "high_2": "18:23", "high_1": "06:08"}]

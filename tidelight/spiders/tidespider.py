@@ -1,4 +1,5 @@
 import scrapy
+import datetime
 from tidelight.items import TideLightItem
 
 class TideSpider(scrapy.Spider):
@@ -20,6 +21,7 @@ class TideSpider(scrapy.Spider):
         item['high_1'] = high_1
         item['low_2'] = low_2
         item['high_2'] = high_2
+        item['timecollected'] = datetime.datetime.now()
 
         return item
 

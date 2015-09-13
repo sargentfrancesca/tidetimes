@@ -13,4 +13,5 @@ class TideLightItem(scrapy.Item):
     high_1 = scrapy.Field()
     low_2 = scrapy.Field()
     high_2 = scrapy.Field()
+    timecollected = scrapy.Field()
     pass
