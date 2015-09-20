@@ -1,0 +1,13 @@
+#!/bin/bash
+
+PATH=$PATH:/usr/local/bin
+export 
+
+
+m today.json
+
+#!/bin/sh
+PATH=$PATH:/usr/local/bin
+export PATH
+rm today.json
+scrapy crawl somepage > /root/sans1.txt
