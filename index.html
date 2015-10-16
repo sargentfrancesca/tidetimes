@@ -1,72 +1,104 @@
 <html>
-Next high: <span class="high"></span><br/>
-Next low: <span class="low"></span><br/>
+<head>
+	<title>TideLight</title>	
+	<link rel="stylesheet" href="assets/css/bootstrap.css" type="text/css">
+	<link rel="stylesheet" href="assets/css/style.css" type="text/css">
+</head>
+<body>
 
-<div id="colour" style="width: 300px; height: 300px"></div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<div id="getting-started"></div>
+
+<div class="container">
+
+	<div class="row">
+		<div class="col-lg-4">
+
+		</div>
+		<div class="col-lg-4">
+			Next high: <span class="high"></span><br/>
+			Next low: <span class="low"></span><br/>
+		</div>
+	</div>
+</div>
+
+<script src="assets/js/jquery-1.11.3.min.js"></script>
+<script src="assets/js/jquery.countdown.min.js"></script>
+
 <script>
-$.get( "today.json", function( data ) {
-	var next_low = data[0].next_low;
-	var next_high = data[0].next_high;
-	var low_1 = data[0].low_1;
-	var low_2 = data[0].low_2;
-	var high_1 = data[0].high_1;
-	var high_2 = data[0].high_2;
+// $.get( "today.json", function( data ) {
 
-	$('.high').html(next_high);
-	$('.low').html(next_low);
+function getTimeStamp(time) {
+	var time_array = time.split(':');
+	var hour = parseInt(time_array[0]);
+	var minute = parseInt(time_array[1]);
+	
+	var d = new Date();
+	var year = d.getFullYear();
+	var month = d.getMonth();
+	var date = d.getDate();
+	var time = new Date(year, month, date, hour, minute, 0, 0).getTime();
+	return(time);
+}
 
-	var numberPattern = /\d+/g;
-	high = next_high.match(numberPattern);
-	low = next_low.match(numberPattern);
+function minutes(array) {
+	return (parseInt(array[0]) * 60) + parseInt(array[1]);
+}
 
-	console.log(high, low);
+function doStuff() {
+	$.get( "today.json", function( data ) {
+		// data = [{"low_2": "14:13", "low_1": "02:00", "next_high": "5hr 9min", "next_low": "11hr 30min", "timecollected": "2015-10-16 14:56:02", "high_2": "20:06", "high_1": "07:55"}]
 
-	function minutes(array) {
-		return (parseInt(array[0]) * 60) + parseInt(array[1]);
-	}
-
-
-	console.log("High", high_1);
-
-	function getTimeStamp(time) {
-		var time_array = time.split(':');
-		var hour = parseInt(time_array[0]);
-		var minute = parseInt(time_array[1]);
+		var next_low = data[0].next_low;
+		var next_high = data[0].next_high;
+		var low_1 = data[0].low_1;
+		var low_2 = data[0].low_2;
+		var high_1 = data[0].high_1;
+		var high_2 = data[0].high_2;
 		
-		var d = new Date();
-		var year = d.getFullYear();
-		var month = d.getMonth();
-		var date = d.getDate();
-		var time = new Date(year, month, date, hour, minute, 0, 0).getTime();
-		return(time);
+		$('.high').html(next_high);
+		$('.low').html(next_low);
+
+		var numberPattern = /\d+/g;
+		high = next_high.match(numberPattern);
+		low = next_low.match(numberPattern);
+
+		console.log(high, low);
+
+		console.log("High", high_1);
+
+		var now = new Date().getTime();
+
+		high_1_time = getTimeStamp(high_1);
+		high_2_time = getTimeStamp(high_2);
+		low_1_time = getTimeStamp(low_1);
+		low_2_time = getTimeStamp(low_2);
+
+		if (high_1_time <= now) {
+		console.log("Minutes until morning high", minutes(high));
+		} else if (high_2_time <= now) {
+		console.log("Minutes until evening high", minutes(high));
+		} else {
+		console.log("Minutes until tomorrow high", minutes(high));
+		}
+		console.log("Minutes until next high:", minutes(high));
+
+		var total_cycle = 745;
+		var percent = (minutes(high) / total_cycle) * 100;
+		var how_long = 100 - percent;
+
+
+		$("body").css("background-color","hsl(175, "+how_long+"%, 75%)");
 	}
 
-	var now = new Date().getTime();
+}
 
-	high_1_time = getTimeStamp(high_1);
-	high_2_time = getTimeStamp(high_2);
-	low_1_time = getTimeStamp(low_1);
-	low_2_time = getTimeStamp(low_2);
+doStuff()	
+setInterval(doStuff, 60000)
 
-	if (high_1_time <= now) {
-	console.log("Minutes until morning high", minutes(high));
-	} else if (high_2_time <= now) {
-	console.log("Minutes until evening high", minutes(high));
-	} else {
-	console.log("Minutes until tomorrow high", minutes(high));
-	}
-	console.log("Minutes until next high:", minutes(high));
+	
 
-	var total_cycle = 745;
-	var percent = (minutes(high) / total_cycle) * 100;
-	var how_long = 100 - percent;
 
-	console.log(how_long);
-
-	$("body").css("background-color","hsl(175, "+how_long+"%, 75%)");
-
-	});
+	// });
 </script>
-
+</body>
 </html>
