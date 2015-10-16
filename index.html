@@ -6,26 +6,28 @@
 </head>
 <body>
 
-<div id="getting-started"></div>
-
-<div class="container">
-
-	<div class="row">
-		<div class="col-lg-4">
-
-		</div>
-		<div class="col-lg-4">
-			Next high: <span class="high"></span><br/>
-			Next low: <span class="low"></span><br/>
+	<!-- <div class="col-lg-4">
+		Next high: <span class="high"></span><br/>
+		Next low: <span class="low"></span><br/>
+	</div> -->
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-2"></div>
+			<div class="col-lg-4">
+				<input class="high_tide main"/>
+			</div>
+			<div class="col-lg-4">		
+				<input class="low_tide"/>
+			</div>
 		</div>
 	</div>
-</div>
+
 
 <script src="assets/js/jquery-1.11.3.min.js"></script>
 <script src="assets/js/jquery.countdown.min.js"></script>
+<script src="assets/js/jquery.nob.js"></script>
 
 <script>
-// $.get( "today.json", function( data ) {
 
 function getTimeStamp(time) {
 	var time_array = time.split(':');
@@ -40,13 +42,19 @@ function getTimeStamp(time) {
 	return(time);
 }
 
+
+
+function createLow() {}
+function createHigh() {}
+function drawKnob() {}
+
 function minutes(array) {
 	return (parseInt(array[0]) * 60) + parseInt(array[1]);
 }
 
 function doStuff() {
-	$.get( "today.json", function( data ) {
-		// data = [{"low_2": "14:13", "low_1": "02:00", "next_high": "5hr 9min", "next_low": "11hr 30min", "timecollected": "2015-10-16 14:56:02", "high_2": "20:06", "high_1": "07:55"}]
+	// $.get( "today.json", function( data ) {
+		data = [{"low_2": "14:13", "low_1": "02:00", "next_high": "5hr 9min", "next_low": "11hr 30min", "timecollected": "2015-10-16 14:56:02", "high_2": "20:06", "high_1": "07:55"}]
 
 		var next_low = data[0].next_low;
 		var next_high = data[0].next_high;
@@ -57,6 +65,7 @@ function doStuff() {
 		
 		$('.high').html(next_high);
 		$('.low').html(next_low);
+
 
 		var numberPattern = /\d+/g;
 		high = next_high.match(numberPattern);
@@ -83,12 +92,48 @@ function doStuff() {
 		console.log("Minutes until next high:", minutes(high));
 
 		var total_cycle = 745;
-		var percent = (minutes(high) / total_cycle) * 100;
-		var how_long = 100 - percent;
+		var percent_high = (minutes(high) / total_cycle) * 100;
+		var how_close_high = 100 - percent_high;
+
+		var percent_low = (minutes(low) / total_cycle) * 100;
+		var how_close_low = 100 - percent_low;
+
+		console.log("Low:", how_close_low, "High:", how_close_high);
+
+		if (how_close_low >= how_close_high) {
+			$('#high_graph').fadeTo('slow', 0.6)
+			$('#low_graph').fadeTo('slow', 1)
+		} else {
+			$('#high_graph').fadeTo('slow', 1)
+			$('#low_graph').fadeTo('slow', 0.6)
+		}
+
+		$('.high_tide').val(how_close_high);
+		$('.high_tide').knob({
+		  'min' : 0.00,
+		  'max' : 100.00,
+		  'step' : 0.001,
+		  'displayInput' : false,
+		  'fgColor' : '#02C39A',
+		  'bgColor' : '#05668D',
+		  'readOnly' : true
+		});
+
+		$('.low_tide').val(how_close_low);
+		$('.low_tide').knob({
+		  'min' : 0.00,
+		  'max' : 100.00,
+		  'step' : 0.001,
+		  'displayInput' : false,
+		  'fgColor' : '#00A896',
+		  'bgColor' : '#028090',
+		  'readOnly' : true
+		});
 
 
-		$("body").css("background-color","hsl(175, "+how_long+"%, 75%)");
-	})
+		$("body").css("background-color","hsl(179, "+how_close_high+"%, 75%)");
+
+	// })
 
 }
 
