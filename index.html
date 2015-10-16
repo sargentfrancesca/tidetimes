@@ -61,7 +61,7 @@ function minutes(array) {
 
 function doStuff() {
 	$.get( "today.json", function( data ) {
-		data = [{"low_2": "14:13", "low_1": "02:00", "next_high": "5hr 9min", "next_low": "11hr 30min", "timecollected": "2015-10-16 14:56:02", "high_2": "20:06", "high_1": "07:55"}]
+		// data = [{"low_2": "14:13", "low_1": "02:00", "next_high": "5hr 9min", "next_low": "11hr 30min", "timecollected": "2015-10-16 14:56:02", "high_2": "20:06", "high_1": "07:55"}]
 
 		var next_low = data[0].next_low;
 		var next_high = data[0].next_high;
