@@ -153,10 +153,13 @@ function initiateVisuals() {
 		how_close_high = times['how_close_high'];
 
 		if (how_close_low >= how_close_high) {
-		drawBalls(how_close_low);
+			drawBalls(how_close_low);
+			setInterval(removeBall, 5000);
 		} else {
 			drawBalls(how_close_high);
+			setInterval(addNewBall, 10000);
 		}
+
 		drawGraphs(how_close_high, how_close_low);
 		
 	});
@@ -201,13 +204,6 @@ function doStuff() {
 
 initiateVisuals()
 
-if (how_close_high >= how_close_low) {
-	//High tide is closer
-	setInterval(addNewBall, 10000)
-} else {
-	//Low tide is closer
-	setInterval(removeBall, 5000)
-}
 setInterval(doStuff, 60000)
 setInterval(addGravity, 60000)
 
