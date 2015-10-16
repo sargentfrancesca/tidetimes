@@ -1,0 +1,26 @@
+/*body {
+	background: url('http://rochelleweiner.com/testing123/wp-content/uploads/2011/07/SEA-2-sm.jpg');
+}
+
+#test {
+	width: 200px;
+	height: 200px;
+	background: yellow;
+	mix-blend-mode: screen;
+	border-radius: 250px;
+}
+
+#test img {
+	mix-blend-mode: hard-light;
+}
+*/
+
+.tide_high label, 
+.tide_low label{
+	font-weight: 200;
+}
+
+.graphs {
+	margin-top: 20%;
+	margin-left: 25%;
+}
