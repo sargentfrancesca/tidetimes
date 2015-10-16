@@ -4,15 +4,7 @@
 	<link rel="stylesheet" href="assets/css/bootstrap.css" type="text/css">
 	<link rel="stylesheet" href="assets/css/style.css" type="text/css">
 </head>
-<body>
-
-	<div id="test">
-	</div>
-
-	<!-- <div class="col-lg-4">
-		Next high: <span class="high"></span><br/>
-		Next low: <span class="low"></span><br/>
-	</div> -->
+<body>	
 	<div class="container">
 
 		<div class="graphs">
@@ -29,85 +21,88 @@
 		</div>
 	</div>
 
+	<div class="sea" id="sea">
+	</div>
+
 
 <script src="assets/js/jquery-1.11.3.min.js"></script>
 <script src="assets/js/jquery.countdown.min.js"></script>
 <script src="assets/js/jquery.nob.js"></script>
+<script src="assets/js/jquery.box2d.js"></script>
 
 <script>
 
-function getTimeStamp(time) {
-	var time_array = time.split(':');
-	var hour = parseInt(time_array[0]);
-	var minute = parseInt(time_array[1]);
+function parseData(data) {
+	var next_low = data[0].next_low;
+	var next_high = data[0].next_high;
+	var low_1 = data[0].low_1;
+	var low_2 = data[0].low_2;
+	var high_1 = data[0].high_1;
+	var high_2 = data[0].high_2;
 	
-	var d = new Date();
-	var year = d.getFullYear();
-	var month = d.getMonth();
-	var date = d.getDate();
-	var time = new Date(year, month, date, hour, minute, 0, 0).getTime();
-	return(time);
+	$('.high').html(next_high);
+	$('.low').html(next_low);
+
+
+	var numberPattern = /\d+/g;
+	high = next_high.match(numberPattern);
+	low = next_low.match(numberPattern);
+	var now = new Date().getTime();
+
+	high_1_time = getTimeStamp(high_1);
+	high_2_time = getTimeStamp(high_2);
+	low_1_time = getTimeStamp(low_1);
+	low_2_time = getTimeStamp(low_2);	
+
+	var total_cycle = 745;
+	var percent_high = (minutes(high) / total_cycle) * 100;
+	var how_close_high = 100 - percent_high;
+
+	var percent_low = (minutes(low) / total_cycle) * 100;
+	var how_close_low = 100 - percent_low;
+
+	return {'how_close_low' : how_close_low, 'how_close_high' : how_close_high}
 }
 
+function drawBalls(percent) {
+	for(i = 0; i < percent + 100; i++) {
+		$('#sea').append('<div class="test" id="test-'+i+'"></div>');
+	}
+
+	$('.test').each(function(index) {
+		$(this).css({
+			'left' : Math.floor(Math.random() * 100) + 0 + '%',
+			'bottom' : Math.floor(Math.random() * 25) + 0 + '%'
+		})
+
+	$(this).box2d({'y-velocity':10, 'restitution': 0.6});
 
 
-function createLow() {}
-function createHigh() {}
-function drawKnob() {}
-
-function minutes(array) {
-	return (parseInt(array[0]) * 60) + parseInt(array[1]);
+	});
 }
 
-function doStuff() {
-	$.get( "today.json", function( data ) {
-		// data = [{"low_2": "14:13", "low_1": "02:00", "next_high": "5hr 9min", "next_low": "11hr 30min", "timecollected": "2015-10-16 14:56:02", "high_2": "20:06", "high_1": "07:55"}]
+function addNewBall() {
+	$('#sea').append('<div class="test new"></div>');
+	$('.new').css({
+		'left' : Math.floor(Math.random() * 100) + 0 + '%'
+	})
+	$('.new').box2d({'y-velocity':10});
+	$('.new').removeClass('new');
+}
 
-		var next_low = data[0].next_low;
-		var next_high = data[0].next_high;
-		var low_1 = data[0].low_1;
-		var low_2 = data[0].low_2;
-		var high_1 = data[0].high_1;
-		var high_2 = data[0].high_2;
-		
-		$('.high').html(next_high);
-		$('.low').html(next_low);
+function removeBall() {
 
+	var numItems = (Math.floor($('.test').length / 2)) - 1
+	console.log(numItems)
+	id = "test-" + (Math.floor(Math.random() * numItems) + 0)
 
-		var numberPattern = /\d+/g;
-		high = next_high.match(numberPattern);
-		low = next_low.match(numberPattern);
+	// $('#' + id).box2d({'x-velocity' : 10})
+	$('#' + id).removeClass('test').remove()
+	
+}
 
-		console.log(high, low);
-
-		console.log("High", high_1);
-
-		var now = new Date().getTime();
-
-		high_1_time = getTimeStamp(high_1);
-		high_2_time = getTimeStamp(high_2);
-		low_1_time = getTimeStamp(low_1);
-		low_2_time = getTimeStamp(low_2);
-
-		if (high_1_time <= now) {
-		console.log("Minutes until morning high", minutes(high));
-		} else if (high_2_time <= now) {
-		console.log("Minutes until evening high", minutes(high));
-		} else {
-		console.log("Minutes until tomorrow high", minutes(high));
-		}
-		console.log("Minutes until next high:", minutes(high));
-
-		var total_cycle = 745;
-		var percent_high = (minutes(high) / total_cycle) * 100;
-		var how_close_high = 100 - percent_high;
-
-		var percent_low = (minutes(low) / total_cycle) * 100;
-		var how_close_low = 100 - percent_low;
-
-
-		if (how_close_low >= how_close_high) {
-			console.log("Low tide is closer")
+function drawGraphs(high, low) {
+	if (how_close_low >= how_close_high) {
 			$('.tide_high').fadeTo('slow', 0.6)
 			$('.high_tide').attr('data-width', 175)
 			$('.tide_low').fadeTo('slow', 1)
@@ -144,13 +139,77 @@ function doStuff() {
 		hsl = "hsl(179, "+how_close_high+"%, 75%)"
 		
 		$("body").css("background-color", hsl);
+}
 
+
+function initiateVisuals() {
+	$.get( "today.json", function( data ) {
+
+		// data = [{"low_2": "14:13", "low_1": "02:00", "next_high": "1hr 0min", "next_low": "11hr 30min", "timecollected": "2015-10-16 14:56:02", "high_2": "20:06", "high_1": "07:55"}]
+
+		
+		times = parseData(data);
+		how_close_low = times['how_close_low'];
+		how_close_high = times['how_close_high'];
+
+		if (how_close_low >= how_close_high) {
+		drawBalls(how_close_low);
+		} else {
+			drawBalls(how_close_high);
+		}
+		drawGraphs(how_close_high, how_close_low);
+		
+	});
+}
+
+
+function getTimeStamp(time) {
+	var time_array = time.split(':');
+	var hour = parseInt(time_array[0]);
+	var minute = parseInt(time_array[1]);
+	
+	var d = new Date();
+	var year = d.getFullYear();
+	var month = d.getMonth();
+	var date = d.getDate();
+	var time = new Date(year, month, date, hour, minute, 0, 0).getTime();
+	return(time);
+}
+
+function minutes(array) {
+	return (parseInt(array[0]) * 60) + parseInt(array[1]);
+}
+
+function addGravity() {
+	$("#test").box2d({'y-velocity':10});
+}
+
+function doStuff() {
+	$.get( "today.json", function( data ) {
+		// data = [{"low_2": "14:13", "low_1": "02:00", "next_high": "5hr 9min", "next_low": "11hr 30min", "timecollected": "2015-10-16 14:56:02", "high_2": "20:06", "high_1": "07:55"}]
+
+		times = parseData(data);
+		how_close_low = times['how_close_low'];
+		how_close_high = times['how_close_high'];
+
+		drawGraphs(how_close_high, how_close_low);
+
+		
 	})
 
 }
 
-doStuff()	
+initiateVisuals()
+
+if (how_close_high >= how_close_low) {
+	//High tide is closer
+	setInterval(addNewBall, 10000)
+} else {
+	//Low tide is closer
+	setInterval(removeBall, 5000)
+}
 setInterval(doStuff, 60000)
+setInterval(addGravity, 60000)
 
 	
 

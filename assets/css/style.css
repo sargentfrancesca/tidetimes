@@ -1,19 +1,24 @@
-/*body {
-	background: url('http://rochelleweiner.com/testing123/wp-content/uploads/2011/07/SEA-2-sm.jpg');
-}
-
 #test {
 	width: 200px;
 	height: 200px;
 	background: yellow;
 	mix-blend-mode: screen;
 	border-radius: 250px;
+	position: absolute;
+	top: 20px;
+	left: 20px;
 }
 
-#test img {
-	mix-blend-mode: hard-light;
+.test {
+	width: 8px;
+	height: 8px;
+	background: yellow;
+	mix-blend-mode: screen;
+	border-radius: 4px;
+	position: absolute;
+	z-index: -1;
 }
-*/
+
 
 .tide_high label, 
 .tide_low label{
@@ -23,4 +28,19 @@
 .graphs {
 	margin-top: 20%;
 	margin-left: 25%;
+}
+
+#sea {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	z-index: -1;
+	display: inline;
+}
+
+.new {
+	position: absolute;
+	top: 0px;
 }
